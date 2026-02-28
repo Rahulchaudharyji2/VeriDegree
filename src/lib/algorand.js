@@ -135,3 +135,38 @@ export async function fetchAssetDetails(assetIndex) {
         return null;
     }
 }
+
+export const executeTalentBounty = async (senderAddress, studentAddress, universityAddress, signTransactionProvider) => {
+    const sAddr = cleanAddress(senderAddress);
+    const stAddr = cleanAddress(studentAddress);
+    const uAddr = cleanAddress(universityAddress);
+    
+    if(!sAddr || !stAddr || !uAddr) throw new Error("Invalid addresses for bounty");
+
+    const params = await algodClient.getTransactionParams().do();
+    
+    const txn1 = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        sender: sAddr,
+        receiver: stAddr,
+        amount: BigInt(4000000), // 4 ALGO
+        suggestedParams: params
+    });
+
+    const txn2 = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        sender: sAddr,
+        receiver: uAddr,
+        amount: BigInt(1000000), // 1 ALGO
+        suggestedParams: params
+    });
+
+    const txns = [txn1, txn2];
+    algosdk.assignGroupID(txns);
+
+    const groupedTxns = txns.map(txn => ({ txn, signers: [sAddr] }));
+    const signedTxns = await signTransactionProvider.signTransaction([groupedTxns]);
+    
+    const { txid } = await algodClient.sendRawTransaction(signedTxns).do();
+    await waitForConfirmation(algodClient, txid, 4);
+    
+    return txid;
+};

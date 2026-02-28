@@ -2,7 +2,7 @@
 import React from 'react';
 import { GraduationCap, ShieldCheck, ChevronRight } from 'lucide-react';
 
-export default function CertificateCard({ asset, onGenerateProof }) {
+export default function CertificateCard({ asset, onGenerateProof, onShareBadge }) {
     return (
         <div className="bg-card border border-gold/20 p-6 rounded-2xl hover:border-gold/50 transition-all group relative overflow-hidden">
             <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -31,13 +31,22 @@ export default function CertificateCard({ asset, onGenerateProof }) {
                     <ShieldCheck size={16} />
                     Prove CGPA Claim
                 </button>
-                <a 
-                    href={`https://testnet.algoexplorer.io/asset/${asset.id}`}
-                    target="_blank"
-                    className="w-full text-center text-[10px] uppercase font-bold tracking-widest text-gray-500 hover:text-gold flex items-center justify-center gap-1 py-1 transition-colors"
-                >
-                    Blockchain Record <ChevronRight size={12} />
-                </a>
+                <div className="flex gap-2">
+                     <button 
+                        onClick={() => onShareBadge(asset)}
+                        className="flex-1 bg-white/5 hover:bg-white/10 text-white/70 text-[11px] font-bold py-2 rounded-lg border border-white/10 transition-all flex items-center justify-center gap-1.5"
+                    >
+                        <ShieldCheck size={14} className="text-gold" />
+                        Share Badge
+                    </button>
+                    <a 
+                        href={`https://testnet.algoexplorer.io/asset/${asset.id}`}
+                        target="_blank"
+                        className="flex-1 bg-white/5 hover:bg-white/10 text-white/50 text-[10px] uppercase font-bold tracking-tighter py-2 rounded-lg border border-white/10 transition-all flex items-center justify-center gap-1"
+                    >
+                        Explorer <ChevronRight size={10} />
+                    </a>
+                </div>
             </div>
         </div>
     );
