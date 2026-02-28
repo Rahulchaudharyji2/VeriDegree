@@ -26,6 +26,7 @@ export default function Navbar() {
     const { data: session, status } = useSession();
     const { disconnect } = useWallet();
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -45,6 +46,11 @@ export default function Navbar() {
     };
 
     const isActive = (path) => pathname === path;
+
+    // Close mobile menu on route change
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [pathname]);
 
     return (
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 px-6 py-4 ${isScrolled ? 'pt-4' : 'pt-6'}`}>
@@ -135,8 +141,85 @@ export default function Navbar() {
                     >
                         <Github size={18} />
                     </a>
+
+                    {/* Mobile Menu Toggle */}
+                    <button 
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="md:hidden p-2 text-gray-400 hover:text-white"
+                    >
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                 </div>
             </div>
+
+            {/* Mobile Menu Dropdown */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.2 }}
+                        className="md:hidden absolute top-24 left-6 right-6 p-6 rounded-[2rem] glass border border-white/10 shadow-2xl flex flex-col gap-6"
+                    >
+                        {/* Links */}
+                        <div className="flex flex-col gap-4">
+                            <Link 
+                                href="/verify"
+                                className={`text-sm font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 ${isActive('/verify') ? 'text-gold bg-gold/5' : 'text-gray-400'}`}
+                            >
+                                <Search size={16} /> Verify Portal
+                            </Link>
+
+                            {session?.user?.role === "UNIVERSITY" && (
+                                <Link 
+                                    href="/issue"
+                                    className={`text-sm font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 ${isActive('/issue') ? 'text-gold bg-gold/5' : 'text-gray-400'}`}
+                                >
+                                    <FilePlus size={16} /> Issue Degree
+                                </Link>
+                            )}
+
+                            {session?.user?.role === "STUDENT" && (
+                                <Link 
+                                    href="/dashboard"
+                                    className={`text-sm font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 ${isActive('/dashboard') ? 'text-gold bg-gold/5' : 'text-gray-400'}`}
+                                >
+                                    <LayoutDashboard size={16} /> My Vault
+                                </Link>
+                            )}
+                        </div>
+
+                        {/* Mobile Actions */}
+                        <div className="pt-6 border-t border-white/10">
+                            {session ? (
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-2 h-2 rounded-full animate-pulse ${session.user.role === "UNIVERSITY" ? 'bg-blue-400' : 'bg-gold'}`} />
+                                        <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">
+                                            {session.user.role === "UNIVERSITY" ? "Institution" : (session.user.address?.slice(0, 4) + "..." + session.user.address?.slice(-4))}
+                                        </span>
+                                    </div>
+                                    <button 
+                                        onClick={handleSignOut}
+                                        className="p-3 bg-red-500/10 text-red-500 rounded-xl"
+                                    >
+                                        <LogOut size={18} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <Link 
+                                    href="/login"
+                                    className="w-full bg-gold hover:bg-gold-dark text-black font-black px-6 py-4 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-widest"
+                                >
+                                    <ShieldCheck size={18} />
+                                    Sign In
+                                </Link>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </nav>
     );
 }
