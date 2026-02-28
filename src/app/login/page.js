@@ -100,7 +100,7 @@ export default function LoginPage() {
     return (
         <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#0a0a0a]">
             {/* Left Side: University Portal */}
-            <section className="relative flex items-center justify-center p-8 lg:p-24 overflow-hidden border-r border-white/5">
+            <section className="relative flex items-center justify-center p-8 pt-32 pb-20 lg:p-24 overflow-hidden border-b lg:border-b-0 lg:border-r border-white/5">
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,#1a1a1a_0%,transparent_50%)]" />
                 
                 <div className="relative w-full max-w-md animate-in fade-in slide-in-from-left duration-700">
@@ -166,7 +166,7 @@ export default function LoginPage() {
             </section>
 
             {/* Right Side: Student Vault */}
-            <section className="relative flex items-center justify-center p-8 lg:p-24 bg-[#111111] overflow-hidden">
+            <section className="relative flex items-center justify-center p-8 py-20 lg:p-24 bg-[#111111] overflow-hidden">
                 <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_80%,#ebcb900a_0%,transparent_50%)]" />
                 <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ebcb90 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
